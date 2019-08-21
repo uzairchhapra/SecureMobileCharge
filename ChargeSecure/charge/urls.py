@@ -6,5 +6,6 @@ urlpatterns = [
     # path("index", views.index,name="index"),
     path("index", views.index, name="index"),
     path("maps", views.maps, name="maps"),
+    path("getlocation", views.getlocation, name="getlocation"),
 
 ]
