@@ -1,5 +1,9 @@
 {% include 'ext_includes/header.html' %}
   {% load static %}
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
 </head>
 <body>
@@ -28,6 +32,40 @@
         }
       }
       map = new google.maps.Map(document.getElementById('map'), options);
+      // var result_1=0;
+      $.ajax('/charge/getlocation',{method: 'GET',data:0}).done(function(result){
+          // console.log(result);
+          result_1=result;
+          // console.log(result_1);
+          for (var i = 0; i <= result_1.length - 1; i++) {
+            console.log(result_1[i].longitude);
+            console.log(result_1[i].latitude);
+            console.log(String(result_1[i].name));
+
+            var marker = new google.maps.Marker({
+              position: {
+                lat: Number(result_1[i].latitude),
+                lng: Number(result_1[i].longitude),
+              },
+              map: map,
+              label: String(result_1[i].name)
+            });
+          };
+
+        }).fail(function () {
+      alert('Server down locations not available');
+    });
+
+    // console.log(result_1);
+
+      // var marker = new google.maps.Marker({
+      //   position: {
+      //     lat: 19.123217,
+      //     lng: 72.822274
+      //   },
+      //   map: map
+      // });
+
       // var marker = new google.maps.Marker();
       infoWindow = new google.maps.InfoWindow;
 
@@ -49,6 +87,7 @@
       } else {
         handleLocationError('No geolocation available.', map.getCenter());
       }
+
     }
 
     function handleLocationError(content, position) {
