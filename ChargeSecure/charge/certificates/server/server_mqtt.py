@@ -1,15 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import *
-import json
-
-
-#AWS imports
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
 import time
 import argparse
-
+import json
 
 def customCallback(client, userdata, message):
     print("Received a new message: ")
@@ -19,16 +12,16 @@ def customCallback(client, userdata, message):
     print("--------------\n\n")
 	
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
-rootCAPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
-certificatePath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-certificate.pem.crt'
-privateKeyPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-private.pem.key'
+rootCAPath = 'root-CA.pem'
+certificatePath = '45447d2f06-certificate.pem.crt'
+privateKeyPath = '45447d2f06-private.pem.key'
 port = 8883 # When no port override for non-WebSocket, default to 8883
 #port = 443 # When no port override for WebSocket, default to 443
-
 useWebsocket = False
 clientId = 'server'
 topic = 'pub'
 mess='UzC'
+#mode='subscribe'
 mode='publish'
 
 # Configure logging
@@ -49,9 +42,9 @@ else:
     myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
     myAWSIoTMQTTClient.configureEndpoint(host, port)
     myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
-    
+	
 # AWSIoTMQTTClient connection configuration
-# myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
+myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
 myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
 myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
@@ -59,33 +52,21 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
+if mode=='subscribe':
+	myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
+time.sleep(2)
 
+# Publish to the same topic in a loop forever
+loopCount = 0
+while True:
+    if mode=='publish':
+        message = {}
+        message['message'] = mess
+        message['sequence'] = loopCount
+        messageJson = json.dumps(message)
+        myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        if mode == 'publish':
+            print('Published topic %s: %s\n' % (topic, messageJson))
+        loopCount += 1
+    time.sleep(1)
 
-
-
-# ---------------------------------------------
-# ____________________________________________
-# ----------------------------------------------
-def index(request):
-    return render(request, 'charge/index.html')
-
-def maps(request):
-    print('hello')
-    return render(request, 'charge/maps2.html')
-
-def getlocation(request):
-    result_set = ChargeStation.objects.all().values()
-    t = []
-    for i in result_set:
-        t.append(i)
-        print(t)
-    return HttpResponse(json.dumps(t), content_type='application/json')
-
-def book_a_locker(request):
-    
-    message = {}
-    message['message'] = mess
-    message['sequence'] = 1
-    messageJson = json.dumps(message)
-    myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-    return HttpResponse('Published topic %s: %s\n' % (topic, messageJson))

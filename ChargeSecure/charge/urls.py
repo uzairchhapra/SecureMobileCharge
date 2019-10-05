@@ -7,5 +7,5 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("maps", views.maps, name="maps"),
     path("getlocation", views.getlocation, name="getlocation"),
-
+    path("book_a_locker", views.book_a_locker, name="book_a_locker"),
 ]
