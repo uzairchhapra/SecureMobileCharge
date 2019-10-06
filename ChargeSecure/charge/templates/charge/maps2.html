@@ -1,11 +1,10 @@
 {% include 'ext_includes/header.html' %}
-  {% load static %}
-  <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
 </head>
+
 <body>
   {% include 'ext_includes/nav.html' %}
   <div style="margin-top: 10%;">
@@ -23,6 +22,7 @@
 
   <script>
     var map, infoWindow;
+
     function initMap() {
       var options = {
         zoom: 16,
@@ -33,30 +33,38 @@
       }
       map = new google.maps.Map(document.getElementById('map'), options);
       // var result_1=0;
-      $.ajax('/charge/getlocation',{method: 'GET',data:0}).done(function(result){
-          // console.log(result);
-          result_1=result;
-          // console.log(result_1);
-          for (var i = 0; i <= result_1.length - 1; i++) {
-            console.log(result_1[i].longitude);
-            console.log(result_1[i].latitude);
-            console.log(String(result_1[i].name));
+      $.ajax('/charge/getlocation', {
+        method: 'GET',
+        data: 0
+      }).done(function (result) {
+        // console.log(result);
+        result_1 = result;
+        // console.log(result_1);
+        for (var i = 0; i <= result_1.length - 1; i++) {
+          console.log(result_1[i].longitude);
+          console.log(result_1[i].latitude);
+          console.log(String(result_1[i].name));
 
-            var marker = new google.maps.Marker({
-              position: {
-                lat: Number(result_1[i].latitude),
-                lng: Number(result_1[i].longitude),
-              },
-              map: map,
-              label: String(result_1[i].name)
-            });
-          };
+          var marker = new google.maps.Marker({
+            position: {
+              lat: Number(result_1[i].latitude),
+              lng: Number(result_1[i].longitude),
+              url: 'https://www.google.com/maps/dir//' + String(result_1[i].latitude) + ',' + String(result_1[i]
+                .longitude),
+            },
+            map: map,
+            label: String(result_1[i].name)
+          });
+          google.maps.event.addDomListener(marker, 'click', function () {
+            window.location.href = marker.url;
+          });
+        };
 
-        }).fail(function () {
-      alert('Server down locations not available');
-    });
+      }).fail(function () {
+        alert('Server down locations not available');
+      });
 
-    // console.log(result_1);
+      // console.log(result_1);
 
       // var marker = new google.maps.Marker({
       //   position: {
@@ -70,7 +78,7 @@
       infoWindow = new google.maps.InfoWindow;
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(p) {
+        navigator.geolocation.getCurrentPosition(function (p) {
           var position = {
             lat: p.coords.latitude,
             lng: p.coords.longitude
@@ -81,7 +89,7 @@
           infoWindow.open(map);
           map.setCenter(position);
           map.setZoom(16);
-        }, function() {
+        }, function () {
           handleLocationError('Geolocation service failed', map.getCenter());
         });
       } else {
@@ -96,7 +104,8 @@
       infoWindow.open(map);
     }
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCn3B-hRlzm78JGc8qJqlPRK48UBfmwUoE&callback=initMap">
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwqswB-MzXZyvJGvcYPKFRn2kHrqT1KFQ&callback=initMap">
   </script>
 
 </body>
