@@ -34,7 +34,7 @@ port = 8883 # When no port override for non-WebSocket, default to 8883
 
 useWebsocket = False
 clientId = 'server'
-topic = 'pub'
+topic = 'server'
 
 # Configure logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")
@@ -92,9 +92,11 @@ def book_a_locker(request):
     # privateKeyPath1 = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/1e5e1bc664-private.pem.key'
     # port = 8883 # When no port override for non-WebSocket, default to 8883
     # #port = 443 # When no port override for WebSocket, default to 443
-
+    if loopcount%2==0:
     # clientId1 = 'server'
-    topic = 'pub'
+        topic = 'dev1'
+    else :
+        topic = 'dev2'
     mess='from_server'
 
     # # Configure logging
