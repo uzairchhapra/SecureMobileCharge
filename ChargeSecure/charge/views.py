@@ -26,9 +26,9 @@ def customCallback(client, userdata, message):
 
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
-rootCAPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
-certificatePath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-certificate.pem.crt'
-privateKeyPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-private.pem.key'
+rootCAPath = 'charge/certificates/server/root-CA.pem'
+certificatePath = 'charge/certificates/server/45447d2f06-certificate.pem.crt'
+privateKeyPath = 'charge/certificates/server/45447d2f06-private.pem.key'
 port = 8883 # When no port override for non-WebSocket, default to 8883
 #port = 443 # When no port override for WebSocket, default to 443
 
