@@ -24,7 +24,7 @@ def customCallback(client, userdata, message):
     print("Received a new message: ")
     print(message.payload)
 
-'''  #remove when connected to internet
+#remove when connected to internet
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'charge/certificates/server/root-CA.pem'
@@ -62,7 +62,7 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myAWSIoTMQTTClient.connect()
 
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
-'''
+
 
 def is_subscribed(request):
     return HttpResponse(str(li))
@@ -92,7 +92,7 @@ def publish_to_station(request):
     #Getting station action details
     station_number = request.GET['station']
     action = request.GET['action']
-    topic = station_number
+    topic = 'dev'+str(station_number)
 
     #Checking if slots available in station
     slot = get_free_slot(station_number)
@@ -112,11 +112,12 @@ def publish_to_station(request):
         #Slot Available
         message['station_number'] = station_number
         message['action'] = action
-#remove when connected to internet        # publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-        publish_status = True
+        messageJson = json.dumps(message)
+#remove when connected to internet        
+        publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        # publish_status = True
         if publish_status == True:
             #Published Successfully
-            messageJson = json.dumps(message)
             print('Published topic %s: %s\n' % (topic, messageJson))
             return HttpResponse('Published topic %s: %s' % (topic, messageJson))
         else:
