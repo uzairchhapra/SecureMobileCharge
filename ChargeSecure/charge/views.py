@@ -24,7 +24,6 @@ def customCallback(client, userdata, message):
     print("Received a new message: ")
     print(message.payload)
 
-#remove when connected to internet
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'charge/certificates/server/root-CA.pem'
@@ -113,9 +112,9 @@ def publish_to_station(request):
         message['station_number'] = station_number
         message['action'] = action
         messageJson = json.dumps(message)
-#remove when connected to internet        
+
         publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-        # publish_status = True
+
         if publish_status == True:
             #Published Successfully
             print('Published topic %s: %s\n' % (topic, messageJson))
