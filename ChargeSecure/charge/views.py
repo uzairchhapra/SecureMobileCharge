@@ -24,6 +24,7 @@ def customCallback(client, userdata, message):
     print("Received a new message: ")
     print(message.payload)
 
+'''  #remove when connected to internet
 
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'charge/certificates/server/root-CA.pem'
@@ -61,7 +62,7 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myAWSIoTMQTTClient.connect()
 
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
-
+'''
 
 def is_subscribed(request):
     return HttpResponse(str(li))
@@ -84,52 +85,62 @@ def getlocation(request):
         print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
+def get_free_slot(station_number):
+    return 3
+
+def publish_to_station(request):
+    #Getting station action details
+    station_number = request.GET['station']
+    action = request.GET['action']
+    topic = station_number
+
+    #Checking if slots available in station
+    slot = get_free_slot(station_number)
+
+    message = {}
+    message['message'] = 'from_server'
+    message['slot'] = slot
+    message['error'] = False
+
+    if slot == -1:
+        #Slots Unavailable
+        message['error'] = True
+        message['error_desc'] = "Slots Unavailable"
+        messageJson = json.dumps(message)
+        return HttpResponse(messageJson)
+    else:
+        #Slot Available
+        message['station_number'] = station_number
+        message['action'] = action
+#remove when connected to internet        # publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+        publish_status = True
+        if publish_status == True:
+            #Published Successfully
+            messageJson = json.dumps(message)
+            print('Published topic %s: %s\n' % (topic, messageJson))
+            return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+        else:
+            #Published Unsuccessfully
+            message['error'] = True
+            message['error_desc'] = 'Failed to reach Server'
+            messageJson = json.dumps(message)
+            return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+
 def book_a_locker(request):
     global loopcount
-    # host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
-    # rootCAPath1 = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
-    # certificatePath1 = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/1e5e1bc664-certificate.pem.crt'
-    # privateKeyPath1 = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/1e5e1bc664-private.pem.key'
-    # port = 8883 # When no port override for non-WebSocket, default to 8883
-    # #port = 443 # When no port override for WebSocket, default to 443
+
     if loopcount%2==0:
-    # clientId1 = 'server'
         topic = 'dev1'
     else :
         topic = 'dev2'
     mess='from_server'
 
-    # # Configure logging
-    # logger1 = logging.getLogger("AWSIoTPythonSDK.core")
-    # logger1.setLevel(logging.DEBUG)
-    # streamHandler = logging.StreamHandler()
-    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # streamHandler.setFormatter(formatter)
-    # logger1.addHandler(streamHandler)
-
-    # # Init AWSIoTMQTTClient
-    # myAWSIoTMQTTClient1 = None
-    
-    # myAWSIoTMQTTClient1 = AWSIoTMQTTClient(clientId1)
-    # myAWSIoTMQTTClient1.configureEndpoint(host, port)
-    # myAWSIoTMQTTClient1.configureCredentials(rootCAPath1, privateKeyPath1, certificatePath1)
-    
-    # # AWSIoTMQTTClient connection configuration
-    # myAWSIoTMQTTClient1.configureAutoReconnectBackoffTime(1, 1, 2)
-    # myAWSIoTMQTTClient1.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
-    # myAWSIoTMQTTClient1.configureDrainingFrequency(5)  # Draining: 2 Hz
-    # myAWSIoTMQTTClient1.configureConnectDisconnectTimeout(10)  # 10 sec
-    # myAWSIoTMQTTClient1.configureMQTTOperationTimeout(5)  # 5 sec
-
-
-    # # Connect and subscribe to AWS IoT
-    # myAWSIoTMQTTClient1.connect()
     loopcount+=1
     message = {}
     message['message'] = mess
     message['sequence'] = loopcount
     messageJson = json.dumps(message)
     wow = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-    # myAWSIoTMQTTClient.disconnect()
+    print('Published topic %s: %s\n' % (topic, messageJson))
 
     return HttpResponse('Published topic %s: %s\n%s' % (topic, messageJson,str(wow)))
