@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from .models import *
 import json
 
-
 #AWS imports
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
@@ -84,26 +83,56 @@ def getlocation(request):
         print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
-def get_free_slot(station_number):
+# def get_free_slot(station_number):
+def get_free_slots(request, station_number):
+    free_slots = []
+    for i in Slot.objects.filter(cid=station_number):#get all slots in station
+        if i.values('status') == 'unused':
+            free_slots.append(i)
+    return free_slots
+
+
+def book_slot(request, station_number, phone_status, action):
+    if action == 'close' or phone_status == 'inside':
+        slot = Book.objects.filter(uid = request.user).order_by('-action_time')[0].sid #current slot of user
     
-    return 3
+    if action == 'open':
+        if phone_status == 'outside':
+            # If phone is outside the charging slot
+            # Checking if slots available in station
+            slot = get_free_slot(request,station_number)
+            if len(slot)>0: # if slots are available
+                Book.objects.create(uid = request.user, sid = slot, phone_status = 'outside', action = 'open').save() #new slot alloted to user
+                slot.status = 'used'
+                slot.save()
+            else:
+                return []
+        elif phone_status == 'inside': # open slot after charging
+            Book.objects.create(uid = request.user, sid = slot, phone_status = 'inside', action = 'open').save()
+    
+    elif action == 'close':
+        if phone_status == 'outside':
+            Book.objects.create(uid = request.user, sid = slot, phone_status = 'outside', action = 'close').save()
+            slot.status = 'unused'
+            slot.save()
+        elif phone_status == 'inside':
+            Book.objects.create(uid = request.user, sid = slot, phone_status = 'inside', action = 'close').save()
+    return [slot]
 
 def publish_to_station(request):
     #Getting station action details
     station_number = request.GET['station']
     action = request.GET['action']
-    phone = request.GET['phone']
+    phone_status = request.GET['phone_status']
     topic = 'dev'+str(station_number)
 
-    #Checking if slots available in station
-    slot = get_free_slot(station_number)
+    slot = book_slot(request, station_number, phone_status, action)
 
     message = {}
     message['message'] = 'from_server'
-    message['slot'] = slot
     message['error'] = False
 
-    if slot == -1:
+    if len(slot) == 0 :
         #Slots Unavailable
         message['error'] = True
         message['error_desc'] = "Slots Unavailable"
@@ -111,9 +140,10 @@ def publish_to_station(request):
         return HttpResponse(messageJson)
     else:
         #Slot Available
+        message['slot'] = slot[0].slot_number
         message['station_number'] = station_number
         message['action'] = action
-        message['phone'] = phone
+        # message['phone_status'] = phone_status
         messageJson = json.dumps(message)
 
         publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
