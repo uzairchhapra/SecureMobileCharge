@@ -85,12 +85,14 @@ def getlocation(request):
     return HttpResponse(json.dumps(t), content_type='application/json')
 
 def get_free_slot(station_number):
+    
     return 3
 
 def publish_to_station(request):
     #Getting station action details
     station_number = request.GET['station']
     action = request.GET['action']
+    phone = request.GET['phone']
     topic = 'dev'+str(station_number)
 
     #Checking if slots available in station
@@ -111,6 +113,7 @@ def publish_to_station(request):
         #Slot Available
         message['station_number'] = station_number
         message['action'] = action
+        message['phone'] = phone
         messageJson = json.dumps(message)
 
         publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
