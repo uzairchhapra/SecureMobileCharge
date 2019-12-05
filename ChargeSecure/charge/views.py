@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 import json
+from django.urls import reverse #coverts name to url
 
 #AWS imports
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -61,6 +62,15 @@ myAWSIoTMQTTClient.connect()
 
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
 
+# def authenticate(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     l = Student.objects.filter(username=username, password=password)
+#     if len(l):
+#         request.session['username'] = username
+#         return HttpResponseRedirect(reverse('index'))
+#     else:
+#         return HttpResponseRedirect(reverse('index'))
 
 def is_subscribed(request):
     return HttpResponse(str(li))
@@ -80,7 +90,7 @@ def getlocation(request):
     t = []
     for i in result_set:
         t.append(i)
-        print(t)
+    print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
 def get_free_slots(request, station_number):
@@ -93,8 +103,14 @@ def get_free_slots(request, station_number):
 
 def book_slot(request, station_number, phone_status, action):
     if action == 'close' or phone_status == 'inside':
-        slot = Book.objects.filter(uid = request.user).order_by('-action_time')[0].sid #current slot of user
-    
+        slot = Book.objects.filter(uid = request.user).order_by('-action_time') #current slot of user
+        
+        if len(slot) == 0 or slot[0].status == 'unused':
+            return ["Error","First put your phone inside"]
+        else:
+            slot = slot[0].sid
+
+
     if action == 'open':
         if phone_status == 'outside':
             # If phone is outside the charging slot
@@ -136,7 +152,13 @@ def publish_to_station(request):
         message['error'] = True
         message['error_desc'] = "Slots Unavailable"
         messageJson = json.dumps(message)
-        return HttpResponse(messageJson)
+        # return HttpResponse(messageJson)
+    elif len(slot) == 2 :
+        #Slots Unavailable
+        message['error'] = True
+        message['error_desc'] = slot[1]
+        messageJson = json.dumps(message)
+        # return HttpResponse(messageJson)
     else:
         #Slot Available
         message['slot'] = slot[0].slot_number
@@ -145,18 +167,18 @@ def publish_to_station(request):
         # message['phone_status'] = phone_status
         messageJson = json.dumps(message)
 
-        publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+    publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
 
-        if publish_status == True:
-            #Published Successfully
-            print('Published topic %s: %s\n' % (topic, messageJson))
-            return HttpResponse('Published topic %s: %s' % (topic, messageJson))
-        else:
-            #Published Unsuccessfully
-            message['error'] = True
-            message['error_desc'] = 'Failed to reach Server'
-            messageJson = json.dumps(message)
-            return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+    if publish_status == True:
+        #Published Successfully
+        print('Published topic %s: %s\n' % (topic, messageJson))
+        return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+    else:
+        #Published Unsuccessfully
+        message['error'] = True
+        message['error_desc'] = 'Failed to reach Server'
+        messageJson = json.dumps(message)
+        return HttpResponse('Published topic %s: %s' % (topic, messageJson))
 
 def book_a_locker(request):
     global loopcount

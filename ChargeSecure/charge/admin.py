@@ -14,12 +14,18 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ['id','uid', 'sid', 'phone_status', 'action', 'action_time']
     search_fields=['id','uid', 'sid', 'phone_status', 'action', 'action_time']
 
+class SlotAdmin(admin.ModelAdmin):
+    list_display = ['slot_number','cid','status']
+    list_filter = ['slot_number','cid','status']
+    search_fields=['slot_number','cid','status']
+
 
 
 admin.site.register(ChargeStation,ChargeStationAdmin)
 
 admin.site.register(UserOfApp,UserAdmin)
 admin.site.register(Book,BookAdmin)
+admin.site.register(Slot,SlotAdmin)
 
 admin.site.site_header = "ChargingBuddy Admin"
 admin.site.site_title = "Admin Page"
