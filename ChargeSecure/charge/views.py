@@ -83,7 +83,6 @@ def getlocation(request):
         print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
-# def get_free_slot(station_number):
 def get_free_slots(request, station_number):
     free_slots = []
     for i in Slot.objects.filter(cid=station_number):#get all slots in station
