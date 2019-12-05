@@ -10,9 +10,9 @@ class UserAdmin(admin.ModelAdmin):
     search_fields=['id','first_name','last_name','email']
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['id','uid', 'cid','book_start_time','book_end_time']
-    list_filter = ['id','uid', 'cid','book_start_time','book_end_time']
-    search_fields=['id','uid', 'cid','book_start_time','book_end_time']
+    list_display = ['id','uid', 'sid', 'phone_status', 'action', 'action_time']
+    list_filter = ['id','uid', 'sid', 'phone_status', 'action', 'action_time']
+    search_fields=['id','uid', 'sid', 'phone_status', 'action', 'action_time']
 
 
 
