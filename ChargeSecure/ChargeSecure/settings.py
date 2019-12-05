@@ -74,17 +74,17 @@ WSGI_APPLICATION = 'ChargeSecure.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'u708089898_charg',
-#         'USER': 'u708089898_yoyo',
-#         'PASSWORD': '123456',
-#         'HOST': 'sql170.main-hosting.eu',
-#         'PORT': '' ,
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'u708089898_charg',
+        'USER': 'u708089898_yoyo',
+        'PASSWORD': '123456',
+        'HOST': 'sql170.main-hosting.eu',
+        'PORT': '' ,
 
-#     }
-# }
+    }
+}
 
 
 # Password validation
