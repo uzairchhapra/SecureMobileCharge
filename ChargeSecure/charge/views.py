@@ -96,27 +96,28 @@ def getlocation(request):
 def get_free_slots(request, station_number):
     free_slots = []
     for i in Slot.objects.filter(cid=station_number):#get all slots in station
-        if i.values('status') == 'unused':
+        if i.status == 'unused':
             free_slots.append(i)
     return free_slots
 
 
 def book_slot(request, station_number, phone_status, action):
-    if action == 'close' or phone_status == 'inside':
-        slot = Book.objects.filter(uid = request.user).order_by('-action_time') #current slot of user
-        
-        if len(slot) == 0 or slot[0].status == 'unused':
-            return ["Error","First put your phone inside"]
-        else:
-            slot = slot[0].sid
 
+    slot = Book.objects.filter(uid = request.user).order_by('-action_time') #current slot of user
+    if (action == 'close' or phone_status == 'inside') and (len(slot) == 0 or slot[0].sid.status == 'unused')  :
+        return ["Error","First put your Phone inside"]
+    elif action == 'close' or phone_status == 'inside':
+        slot = slot[0].sid
 
     if action == 'open':
         if phone_status == 'outside':
+            if len(slot) != 0 and slot[0].sid.status == 'used':
+                return ["Error","Your Phone is already inside"]
             # If phone is outside the charging slot
             # Checking if slots available in station
-            slot = get_free_slot(request,station_number)
+            slot = get_free_slots(request,station_number)
             if len(slot)>0: # if slots are available
+                slot = slot[0]
                 Book.objects.create(uid = request.user, sid = slot, phone_status = 'outside', action = 'open').save() #new slot alloted to user
                 slot.status = 'used'
                 slot.save()
