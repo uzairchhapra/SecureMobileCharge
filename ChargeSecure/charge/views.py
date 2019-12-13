@@ -145,6 +145,7 @@ def publish_to_station(request):
     slot = book_slot(request, station_number, phone_status, action)
 
     message = {}
+    message['phone_status'] = phone_status
     message['message'] = 'from_server'
     message['error'] = False
 
