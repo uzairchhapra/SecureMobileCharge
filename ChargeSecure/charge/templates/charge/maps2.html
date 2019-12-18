@@ -27,8 +27,8 @@
       var options = {
         zoom: 16,
         center: {
-          lat: 19.0760,
-          lng: 72.8777
+          lat: 19.125577,
+          lng: 72.822287
         }
       }
       map = new google.maps.Map(document.getElementById('map'), options);
@@ -37,6 +37,8 @@
         method: 'GET',
         data: 0
       }).done(function (result) {
+        var infowindow = new google.maps.InfoWindow({});
+
         // console.log(result);
         result_1 = result;
         // console.log(result_1);
@@ -44,20 +46,29 @@
           console.log(result_1[i].longitude);
           console.log(result_1[i].latitude);
           console.log(String(result_1[i].name));
+          var loc = "https://www.google.com/maps/dir//" + String(result_1[i].latitude) + "," + String(result_1[i].longitude);
+          var info = '<strong>'+String(result_1[i].name)+'</strong><br>\r\ ' +
+          result_1[i].description+'<br><a href="'+loc+'">Get Directions</a>';
+          console.log(info);
 
           var marker = new google.maps.Marker({
             position: {
               lat: Number(result_1[i].latitude),
               lng: Number(result_1[i].longitude),
-              url: 'https://www.google.com/maps/dir//' + String(result_1[i].latitude) + ',' + String(result_1[i]
-                .longitude),
+              // url: 'https://www.google.com/maps/dir//' + String(result_1[i].latitude) + ',' + String(result_1[i]
+              //   .longitude),
             },
             map: map,
             label: String(result_1[i].name)
           });
-          google.maps.event.addDomListener(marker, 'click', function () {
-            window.location.href = marker.url;
-          });
+
+          google.maps.event.addListener(marker, 'click', (function (marker, i) {
+			      return function () {
+              infowindow.setContent(info);
+              infowindow.open(map, marker);
+            }
+	      	})(marker, i));
+
         };
 
       }).fail(function () {
