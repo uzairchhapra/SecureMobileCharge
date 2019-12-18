@@ -17,11 +17,11 @@ def customCallback(client, userdata, message):
     print("from topic: ")
     print(message.topic)
     print("--------------\n\n")
-	
+
 host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
-rootCAPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
-certificatePath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-certificate.pem.crt'
-privateKeyPath = 'C:/Users/Sameer/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-private.pem.key'
+rootCAPath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
+certificatePath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-certificate.pem.crt'
+privateKeyPath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-private.pem.key'
 port = 8883 # When no port override for non-WebSocket, default to 8883
 #port = 443 # When no port override for WebSocket, default to 443
 
@@ -49,7 +49,7 @@ else:
     myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
     myAWSIoTMQTTClient.configureEndpoint(host, port)
     myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
-    
+
 # AWSIoTMQTTClient connection configuration
 # myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
 myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
@@ -82,7 +82,7 @@ def getlocation(request):
     return HttpResponse(json.dumps(t), content_type='application/json')
 
 def book_a_locker(request):
-    
+
     message = {}
     message['message'] = mess
     message['sequence'] = 1
