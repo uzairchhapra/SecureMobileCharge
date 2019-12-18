@@ -1,2 +1,9 @@
 Commit by Uzair - 1
 Commit by Aditya -2
+
+from django.db import connection
+connection.close()
+
+https://www.google.com/maps/place/19.125577,72.822287
+72.822287 19.125577 long/lat
+72.836152 19.114798

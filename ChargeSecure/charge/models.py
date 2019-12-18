@@ -10,9 +10,6 @@ class UserOfApp(AbstractUser):
     city= models.CharField(max_length=100)
     phone= models.CharField(max_length=10)
 
-#72.822287 19.125577 lat/long
-#72.836152 19.114798
-
 class ChargeStation(models.Model):
     latitude = models.CharField(max_length=300)
     longitude = models.CharField(max_length=300)
