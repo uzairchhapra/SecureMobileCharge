@@ -32,38 +32,35 @@
         }
       }
       map = new google.maps.Map(document.getElementById('map'), options);
-      // var result_1=0;
+      // var result=0;
       $.ajax('/charge/getlocation', {
         method: 'GET',
         data: 0
       }).done(function (result) {
         var infowindow = new google.maps.InfoWindow({});
+        var marker,i,info,loc;
 
-        // console.log(result);
-        result_1 = result;
-        // console.log(result_1);
-        for (var i = 0; i <= result_1.length - 1; i++) {
-          console.log(result_1[i].longitude);
-          console.log(result_1[i].latitude);
-          console.log(String(result_1[i].name));
-          var loc = "https://www.google.com/maps/dir//" + String(result_1[i].latitude) + "," + String(result_1[i].longitude);
-          var info = '<strong>'+String(result_1[i].name)+'</strong><br>\r\ ' +
-          result_1[i].description+'<br><a href="'+loc+'">Get Directions</a>';
-          console.log(info);
-
-          var marker = new google.maps.Marker({
+        for (i = 0; i < result.length ; i++) {
+          console.log(result[i].longitude);
+          console.log(result[i].latitude);
+          console.log(String(result[i].name));
+          
+          marker = new google.maps.Marker({
             position: {
-              lat: Number(result_1[i].latitude),
-              lng: Number(result_1[i].longitude),
-              // url: 'https://www.google.com/maps/dir//' + String(result_1[i].latitude) + ',' + String(result_1[i]
-              //   .longitude),
+              lat: Number(result[i].latitude),
+              lng: Number(result[i].longitude),
             },
             map: map,
-            label: String(result_1[i].name)
+            label: String(result[i].name)
           });
 
           google.maps.event.addListener(marker, 'click', (function (marker, i) {
 			      return function () {
+              loc = "https://www.google.com/maps/dir//" + String(result[i].latitude) + "," + String(result[i].longitude);
+              info = '<strong>'+String(result[i].name)+'</strong><br>\r\ ' +
+              result[i].description+'<br><a target="_blank"  href="'+loc+'">Get Directions</a>';
+              console.log(info);
+
               infowindow.setContent(info);
               infowindow.open(map, marker);
             }
@@ -75,7 +72,7 @@
         alert('Server down locations not available');
       });
 
-      // console.log(result_1);
+      // console.log(result);
 
       // var marker = new google.maps.Marker({
       //   position: {
