@@ -21,13 +21,6 @@ def customCallback(client, userdata, message):
     print("from topic: ")
     print(message.topic)
     print("--------------\n\n")
-<<<<<<< HEAD
-
-host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
-rootCAPath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/root-CA.pem'
-certificatePath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-certificate.pem.crt'
-privateKeyPath = '/Users/adityachavan/Documents/GitHub/SecureMobileCharge/ChargeSecure/charge/certificates/server/45447d2f06-private.pem.key'
-=======
     print("Received a new message: ")
     print(message.payload)
 
@@ -36,7 +29,6 @@ host = 'a1wlltnsvntckz-ats.iot.ap-south-1.amazonaws.com'
 rootCAPath = 'charge/certificates/server/root-CA.pem'
 certificatePath = 'charge/certificates/server/45447d2f06-certificate.pem.crt'
 privateKeyPath = 'charge/certificates/server/45447d2f06-private.pem.key'
->>>>>>> b24f8cac40019fb7bd73ef677f8f922aefebd02e
 port = 8883 # When no port override for non-WebSocket, default to 8883
 #port = 443 # When no port override for WebSocket, default to 443
 
@@ -54,23 +46,11 @@ logger.addHandler(streamHandler)
 
 # Init AWSIoTMQTTClient
 myAWSIoTMQTTClient = None
-<<<<<<< HEAD
-if useWebsocket:
-    myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId, useWebsocket=True)
-    myAWSIoTMQTTClient.configureEndpoint(host, port)
-    myAWSIoTMQTTClient.configureCredentials(rootCAPath)
-else:
-    myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
-    myAWSIoTMQTTClient.configureEndpoint(host, port)
-    myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
-
-=======
 
 myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
 myAWSIoTMQTTClient.configureEndpoint(host, port)
 myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
     
->>>>>>> b24f8cac40019fb7bd73ef677f8f922aefebd02e
 # AWSIoTMQTTClient connection configuration
 myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 1, 2)
 myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
@@ -113,10 +93,6 @@ def getlocation(request):
     print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
-<<<<<<< HEAD
-def book_a_locker(request):
-
-=======
 def get_free_slots(request, station_number):
     free_slots = []
     for i in Slot.objects.filter(cid=station_number):#get all slots in station
@@ -216,17 +192,11 @@ def book_a_locker(request):
     mess='from_server'
 
     loopcount+=1
->>>>>>> b24f8cac40019fb7bd73ef677f8f922aefebd02e
     message = {}
     message['message'] = mess
     message['sequence'] = loopcount
     messageJson = json.dumps(message)
-<<<<<<< HEAD
-    myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-    return HttpResponse('Published topic %s: %s\n' % (topic, messageJson))
-=======
     wow = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
     print('Published topic %s: %s\n' % (topic, messageJson))
 
     return HttpResponse('Published topic %s: %s\n%s' % (topic, messageJson,str(wow)))
->>>>>>> b24f8cac40019fb7bd73ef677f8f922aefebd02e
