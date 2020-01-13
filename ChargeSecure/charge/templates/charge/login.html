@@ -1,0 +1,30 @@
+{% include 'ext_includes/header.html' %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
+
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+{% include 'ext_includes/nav.html' %}
+
+<div style="margin-top: 8%;">
+  <div class="container-fluid">
+    <h2>Login</h2>
+    <form action="{% url 'authenticateuser' %}" method="POST">
+      {% csrf_token %}
+      <label for="email">Email:</label>
+      <input class="form-control" id="email" name="email" type="text" required>
+      <label for="password">Password:</label>
+      <input class="form-control" name="password" type="password" required>
+      <div class="" style="margin-top: 1%;">
+        <button class="btn btn-primary btn-lg btn-block" type="submit" name="button">Login</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+
+
+</body>
+</html>

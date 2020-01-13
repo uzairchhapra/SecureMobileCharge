@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, login, logout
 from .models import *
 import json
 from django.urls import reverse #coverts name to url
@@ -50,7 +52,7 @@ myAWSIoTMQTTClient = None
 myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
 myAWSIoTMQTTClient.configureEndpoint(host, port)
 myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
-    
+
 # AWSIoTMQTTClient connection configuration
 myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 1, 2)
 myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
@@ -62,15 +64,36 @@ myAWSIoTMQTTClient.connect()
 
 myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
 
-# def authenticate(request):
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     l = Student.objects.filter(username=username, password=password)
-#     if len(l):
-#         request.session['username'] = username
-#         return HttpResponseRedirect(reverse('index'))
-#     else:
-#         return HttpResponseRedirect(reverse('index'))
+def authenticateuser(request):
+    # device = request.POST['device'].split(" ")[0]
+    device = 'web'
+    email = request.POST['email']
+    password = request.POST['password']
+    user = authenticate(username=email, password=password)
+    print(email,password,"\n\n\n\n\n\n\n\n\n\n")
+    # login(request, user)
+    if user is not None:
+        login(request, user)
+        if device == 'web':
+            # return render(request, 'Money/home.html', {})
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return HttpResponse(json.dumps(["True"]), content_type='application/json')
+
+
+    else:
+        if device == 'web':
+            # return render(request, 'Money/login.html', {'loginfail' : True })
+            return HttpResponseRedirect(reverse('login'))
+        else:
+            return HttpResponse(json.dumps(["False"]), content_type='application/json')
+
+    # l = UserOfApp.objects.filter(username=username, password=password)
+    # if len(l):
+    #     request.session['username'] = username
+    #     return HttpResponseRedirect(reverse('index'))
+    # else:
+    #     return HttpResponseRedirect(reverse('login'))
 
 def is_subscribed(request):
     return HttpResponse(str(li))
@@ -81,9 +104,25 @@ def is_subscribed(request):
 def index(request):
     return render(request, 'charge/index.html')
 
+def loginuser(request):
+    return render(request, 'charge/login.html')
+
+def logoutuser(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('login'))
+
 def maps(request):
     print('hello')
     return render(request, 'charge/maps2.html')
+
+def checkslots(request):
+    sid = request.GET['stationid']
+    free_slots = get_free_slots(sid)
+    free_slots_list=[]
+    for i in free_slots:
+        free_slots_list.append(i.id)
+    print(free_slots_list)
+    return render(request, 'charge/chargestation.html', {'free_slots_list':free_slots_list})
 
 def getlocation(request):
     result_set = ChargeStation.objects.all().values()
@@ -93,7 +132,7 @@ def getlocation(request):
     print(t)
     return HttpResponse(json.dumps(t), content_type='application/json')
 
-def get_free_slots(request, station_number):
+def get_free_slots(station_number):
     free_slots = []
     for i in Slot.objects.filter(cid=station_number):#get all slots in station
         if i.status == 'unused':
@@ -115,7 +154,7 @@ def book_slot(request, station_number, phone_status, action):
                 return ["Error","Your Phone is already inside"]
             # If phone is outside the charging slot
             # Checking if slots available in station
-            slot = get_free_slots(request,station_number)
+            slot = get_free_slots(station_number)
             if len(slot)>0: # if slots are available
                 slot = slot[0]
                 Book.objects.create(uid = request.user, sid = slot, phone_status = 'outside', action = 'open').save() #new slot alloted to user
@@ -125,7 +164,7 @@ def book_slot(request, station_number, phone_status, action):
                 return []
         elif phone_status == 'inside': # open slot after charging
             Book.objects.create(uid = request.user, sid = slot, phone_status = 'inside', action = 'open').save()
-    
+
     elif action == 'close':
         if phone_status == 'outside':
             Book.objects.create(uid = request.user, sid = slot, phone_status = 'outside', action = 'close').save()

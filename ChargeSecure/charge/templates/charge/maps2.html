@@ -44,7 +44,7 @@
           console.log(result[i].longitude);
           console.log(result[i].latitude);
           console.log(String(result[i].name));
-          
+
           marker = new google.maps.Marker({
             position: {
               lat: Number(result[i].latitude),
@@ -56,9 +56,13 @@
 
           google.maps.event.addListener(marker, 'click', (function (marker, i) {
 			      return function () {
+
+              
               loc = "https://www.google.com/maps/dir//" + String(result[i].latitude) + "," + String(result[i].longitude);
+              free_slot_link = "http://127.0.0.1:8000/charge/checkslots?stationid="+String(result[i].id);
               info = '<strong>'+String(result[i].name)+'</strong><br>\r\ ' +
-              result[i].description+'<br><a target="_blank"  href="'+loc+'">Get Directions</a>';
+              result[i].description+'<br><a target="_blank"  href="'+loc+'">Get Directions</a>'
+              + '<br><a target="_blank"  href="'+free_slot_link+'">Check free slots</a>';
               console.log(info);
 
               infowindow.setContent(info);
