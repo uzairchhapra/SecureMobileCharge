@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import *
 
 class ChargeStationAdmin(admin.ModelAdmin):
-    list_display = ['id','latitude', 'longitude']
-    search_fields=['name','description','latitude','longitude']
+    list_display = ['id','latitude', 'longitude','name']
+    search_fields=['name','description','latitude','longitude','name']
 
 class UserAdmin(admin.ModelAdmin):
     list_display=['id','first_name','last_name','email']

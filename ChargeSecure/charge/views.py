@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from .models import *
 import json
 from django.urls import reverse #coverts name to url
@@ -111,18 +112,22 @@ def logoutuser(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
 
+@login_required(login_url="/charge/login")
 def maps(request):
     print('hello')
     return render(request, 'charge/maps2.html')
 
+@login_required(login_url="/charge/login")
 def checkslots(request):
     sid = request.GET['stationid']
+    C_S = ChargeStation.objects.filter(id=sid)[0]
     free_slots = get_free_slots(sid)
-    free_slots_list=[]
+    free_slots_dict=dict()
     for i in free_slots:
-        free_slots_list.append(i.id)
-    print(free_slots_list)
-    return render(request, 'charge/chargestation.html', {'free_slots_list':free_slots_list})
+        free_slots_dict[str(i.slot_number)]=i.id
+    
+    print(free_slots_dict)
+    return render(request, 'charge/chargestation_visual.html', {'free_slots_dict':free_slots_dict,'station_name':C_S.name,'station_description':C_S.description})
 
 def getlocation(request):
     result_set = ChargeStation.objects.all().values()
@@ -140,6 +145,7 @@ def get_free_slots(station_number):
     return free_slots
 
 
+@login_required(login_url="/charge/login")
 def book_slot(request, station_number, phone_status, action):
 
     slot = Book.objects.filter(uid = request.user).order_by('-action_time') #current slot of user
