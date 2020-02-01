@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
@@ -59,7 +60,7 @@ class locations{
 
 }
 
-public class location extends Fragment implements OnMapReadyCallback{
+public class location extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
 //     <!-- Get markers
     public class GetMarkers extends AsyncTask<String, Void, String> {
@@ -109,15 +110,9 @@ public class location extends Fragment implements OnMapReadyCallback{
 
             marker = new LatLng(stations[j].lat,stations[j].lng);
             m.addMarker(new MarkerOptions().position(marker)
-                    .title(stations[j].name));
+                    .title(stations[j].name).snippet(""+stations[j].s)).setTag(stations[j].id);
 
         }
-
-//        LatLng sydney = new LatLng(18.935934, 7.993663);
-//        m.addMarker(new MarkerOptions().position(sydney)
-//                .title("Marker"));
-//        m.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
     }
 }
 //    Get markers>>
@@ -224,6 +219,12 @@ public class location extends Fragment implements OnMapReadyCallback{
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
         // TODO: Use the ViewModel
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(this.getActivity(),""+marker.getTag(),Toast.LENGTH_LONG).show();
+        return true;
     }
 
     @Override
