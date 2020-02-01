@@ -44,6 +44,30 @@ import android.view.Menu;
 
 public class MainActivity extends AppCompatActivity{
 
+    private static int REQUEST_LOCATION_PERMISSION = 1;
+
+    private boolean isPermissionGranted(){
+        return ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void enableMyLocation() {
+        if (isPermissionGranted()) {
+            if (map != null)
+            {
+                map.setMyLocationEnabled(true);
+            }
+        }
+        else {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{(Manifest.permission.ACCESS_FINE_LOCATION)},
+                    REQUEST_LOCATION_PERMISSION
+            );
+        }
+    }
+
     GoogleMap mMap;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -81,6 +105,7 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        enableMyLocation();
 
     }
     @Override

@@ -26,6 +26,7 @@ class location : Fragment(), OnMapReadyCallback {
             this.requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
+
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             map.isMyLocationEnabled = true
