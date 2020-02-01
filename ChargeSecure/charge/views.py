@@ -117,8 +117,15 @@ def maps(request):
     print('hello')
     return render(request, 'charge/maps2.html')
 
-@login_required(login_url="/charge/login")
+# @login_required(login_url="/charge/login")
 def checkslots(request):
+    try:
+        device = request.GET['device']
+    except:
+        device="web"
+    print("XXXXXXXXXXXXXx")
+    print(device)
+    print("XXXXXXXXXX")
     sid = request.GET['stationid']
     C_S = ChargeStation.objects.filter(id=sid)[0]
     free_slots = get_free_slots(sid)
@@ -126,8 +133,13 @@ def checkslots(request):
     for i in free_slots:
         free_slots_dict[str(i.slot_number)]=i.id
     
+    data_dic = {'free_slots_dict':free_slots_dict,'station_name':C_S.name,'station_description':C_S.description}
+
     print(free_slots_dict)
-    return render(request, 'charge/chargestation_visual.html', {'free_slots_dict':free_slots_dict,'station_name':C_S.name,'station_description':C_S.description})
+    if device == "web":
+        return render(request, 'charge/chargestation_visual.html', data_dic)
+    else:
+        return HttpResponse(json.dumps(data_dic), content_type='application/json')
 
 def getlocation(request):
     result_set = ChargeStation.objects.all().values()
