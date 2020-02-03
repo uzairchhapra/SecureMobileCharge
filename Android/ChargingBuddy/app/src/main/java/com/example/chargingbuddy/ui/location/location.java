@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,8 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.chargingbuddy.PopActivity;
 import com.example.chargingbuddy.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -29,22 +30,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class locations{
+
+class locations {
     int id;
     double lat;
     double lng;
     String s;
     String name;
 
-    locations(int id,double lat,double lng,String s,String name){
+    locations(int id, double lat, double lng, String s, String name) {
         this.id = id;
         this.lat = lat;
         this.lng = lng;
@@ -53,16 +53,15 @@ class locations{
     }
 
     @Override
-    public String toString()
-    {
-        return(""+this.id+" "+this.lat+" "+this.lng+" "+this.s+" "+this.name);
+    public String toString() {
+        return ("" + this.id + " " + this.lat + " " + this.lng + " " + this.s + " " + this.name);
     }
 
 }
 
 public class location extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-//     <!-- Get markers
+    //     <!-- Get markers
     public class GetMarkers extends AsyncTask<String, Void, String> {
 
         GoogleMap m;
@@ -74,7 +73,7 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
             URL url;
             HttpURLConnection conn;
             try {
-                url = new URL("http://192.168.0.100:8000/charge/getlocation");
+                url = new URL("http://192.168.0.104:8000/charge/getlocation");
                 conn = (HttpURLConnection) url.openConnection();
                 InputStream in = conn.getInputStream();
                 InputStreamReader reader = new InputStreamReader(in);
@@ -84,44 +83,41 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
                     result += current;
                     data = reader.read();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 result += "Error: ";
-                result+= e.getMessage();
+                result += e.getMessage();
             }
 
-            Log.d("result", "onMapReady: before");
-
-            Log.d("result", "onMapReady: after");
+            Log.d("result", "onMapReady: Location doInBackGround");
 
             return result;
         }
 
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
 //        Log.d("result", "onPostExecute: "+result);
 
-        LatLng marker ;
-        locations stations[] = string_to_loc_class(result);
+            LatLng marker;
+            locations stations[] = string_to_loc_class(result);
 
-        for (int j = 0; j < stations.length; j++){
-            Log.d("result_sta", "doInBackground: "+stations[j]);
+            for (int j = 0; j < stations.length; j++) {
+                Log.d("result_sta", "doInBackground: " + stations[j]);
 
-            marker = new LatLng(stations[j].lat,stations[j].lng);
-            m.addMarker(new MarkerOptions().position(marker)
-                    .title(stations[j].name).snippet(""+stations[j].s)).setTag(stations[j].id);
+                marker = new LatLng(stations[j].lat, stations[j].lng);
+                m.addMarker(new MarkerOptions().position(marker)).setTag(stations[j]);
 
+            }
         }
     }
-}
 //    Get markers>>
 
-    private locations[] string_to_loc_class(String s ){
+
+    private locations[] string_to_loc_class(String s) {
         int i = s.indexOf("id");
         locations l[];
 
-        if (i!=-1) {
+        if (i != -1) {
             String arr[] = s.split("\"id\"");
             l = new locations[arr.length - 1];
 
@@ -158,19 +154,17 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
                 l[j - 1] = new locations(id, lat, lng, data, name);
 
             }
-        }
-        else {
+        } else {
             l = new locations[0];
         }
         return l;
     }
 
 
-
-//     <!--   Get Live location with permission
+    //     <!--   Get Live location with permission
     private static int REQUEST_LOCATION_PERMISSION = 1;
 
-    private boolean isPermissionGranted(){
+    private boolean isPermissionGranted() {
         return ContextCompat.checkSelfPermission(
                 this.requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -178,7 +172,19 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
 
     private void enableMyLocation() {
         if (isPermissionGranted()) {
-            map.setMyLocationEnabled(true) ;
+            map.setMyLocationEnabled(true);
+
+
+//            LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+//
+//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//
+//            double longitude = location.getLongitude();
+//            double latitude = location.getLatitude();
+//
+//            LatLng marker = new LatLng(longitude,latitude);
+//            map.addMarker(new MarkerOptions().position(marker));
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker,15f));
         }
         else {
             ActivityCompat.requestPermissions(
@@ -223,16 +229,31 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this.getActivity(),""+marker.getTag(),Toast.LENGTH_LONG).show();
-        return true;
+        locations mar = (locations)marker.getTag();
+
+//        Snackbar.make(getView(), "id for this is "+mar.id, Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
+
+        Toast.makeText(this.getActivity(),"For direction ",Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(getActivity().getApplicationContext(), PopActivity.class);
+        i.putExtra("id",""+mar.id);
+        i.putExtra("name",""+mar.name);
+        i.putExtra("s",""+mar.s);
+
+        startActivity(i);
+        return false;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        // Add a marker in Sydney, Australia,
+        map.getUiSettings().setMapToolbarEnabled(true);
+
+        googleMap.setOnMarkerClickListener(this);
+//         Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
-        Toast.makeText(this.getActivity(),"Wait while station locations are searching",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(),"Wait while station locations are searching",Toast.LENGTH_LONG).show();
         Log.d("result", "onMapReady: before_connection");
 //----------------------------------------
 
