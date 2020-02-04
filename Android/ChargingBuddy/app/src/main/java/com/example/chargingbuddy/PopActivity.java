@@ -30,7 +30,7 @@ public class PopActivity extends Activity {
             URL url;
             HttpURLConnection conn;
             try {
-                url = new URL("http://192.168.0.104:8000/charge/checkslots?stationid="+strings[0]+"&device=android");
+                url = new URL("http://192.168.0.101:8000/charge/checkslots?stationid="+strings[0]+"&device=android");
                 conn = (HttpURLConnection) url.openConnection();
                 InputStream in = conn.getInputStream();
                 InputStreamReader reader = new InputStreamReader(in);

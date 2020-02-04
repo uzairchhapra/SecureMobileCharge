@@ -174,17 +174,6 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
         if (isPermissionGranted()) {
             map.setMyLocationEnabled(true);
 
-
-//            LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-//
-//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//
-//            double longitude = location.getLongitude();
-//            double latitude = location.getLatitude();
-//
-//            LatLng marker = new LatLng(longitude,latitude);
-//            map.addMarker(new MarkerOptions().position(marker));
-//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker,15f));
         }
         else {
             ActivityCompat.requestPermissions(
@@ -251,8 +240,6 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
         map.getUiSettings().setMapToolbarEnabled(true);
 
         googleMap.setOnMarkerClickListener(this);
-//         Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
         Toast.makeText(this.getActivity(),"Wait while station locations are searching",Toast.LENGTH_LONG).show();
         Log.d("result", "onMapReady: before_connection");
 //----------------------------------------
