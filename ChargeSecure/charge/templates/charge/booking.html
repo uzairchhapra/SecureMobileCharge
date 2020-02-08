@@ -18,9 +18,27 @@
         {% if already_booked %}
           <div class="alert alert-info alert-dismissible">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Info!</strong> Your Phone has been already being assigned Slot having Id: {{slot_id}}
+            <strong>Info!</strong> Your Phone has being assigned Slot having Id: {{slot_id}}
           </div>
         {% endif %}
+        
+        {% if error %}
+          <div class="alert alert-danger alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> {{error_desc}}
+          </div>
+        {% elif success %}
+          <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Warning!</strong> 
+            {% if action == "open" %}
+                Slot {{slot_id}} is Opening
+            {% else %}
+                Slot {{slot_id}} is closing
+            {% endif %}
+          </div>
+        {% endif %}
+
         <div class="row slideanim">
             <form action="{% url 'publish_to_station' %}" method="POST">
                 {% csrf_token %}
@@ -38,9 +56,13 @@
                 <div>
                     <label for="phone_status">Phone Status</label>
                     <select class="form-control" name="phone_status">
-                        <option value="inside">Phone is inside</option>
-                        <option value="outside">Phone is outside</option>
+                        <option value="inside">Phone is inside locker</option>
+                        <option value="outside">Phone is outside locker</option>
                     </select>
+                </div>
+                <div style="margin-top: 1%;" class="alert alert-info alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Info!</strong> Make sure door is closed properly before proceeding
                 </div>
                 <div class="" style="margin-top: 1%;">
                     <button class="btn btn-primary btn-lg btn-block" type="submit" name="button">Proceed</button>
