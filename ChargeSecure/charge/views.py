@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 import json
 from django.urls import reverse #coverts name to url
+import glob as g
 
 #AWS imports
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -172,6 +173,18 @@ def get_free_slots(station_number):
             free_slots.append(i)
     return free_slots
 
+def advertisement(request):
+    images_dict = dict()
+    images=g.glob('charge/static/charge/images/offers/*')
+    for i in images:
+        t = i
+        i = "charge/images/offers/"+i.split("/")[-1][7:]
+        print(i)
+        t = t.split("offers")[-1][1:]
+        key = " ".join(t[:t.index(".")].split("_"))
+        images_dict[key] = i
+    data_dic = {'images_dict':images_dict}
+    return render(request, 'charge/advertisement.html',data_dic)
 
 @login_required(login_url="/charge/login")
 def book_slot(request, station_number, phone_status, action):
