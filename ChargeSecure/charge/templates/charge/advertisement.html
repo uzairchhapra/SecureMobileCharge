@@ -1,0 +1,59 @@
+{% include 'ext_includes/header.html' %}
+{% load static %}
+{% load charging_buddy_tags %}
+<link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'charge/css/offers.css' %}">
+</head>
+
+<body>
+  {% include 'ext_includes/nav.html' %}
+
+  <!-- Slots Container -->
+  <div id="slots" class="container-fluid">
+    <div class="text-center">
+      <h1><center><p><strong>Offers</strong></p><center></h1>
+    </div>
+    <center>
+    <div class="row slideanim">
+        {% for key, value in images_dict.items %}
+            <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                <img src="{% static value %}" alt="Avatar" style="width:600px;height:300px;">
+                </div>
+                <div class="flip-card-back">    
+                    <h1>{{key}}</h1>
+                    <p>Here's one more special offer for you</p>
+                    <p>Visit website on image for more information</p>
+                </div>
+            </div>
+            </div>
+        {% endfor %}
+
+  </div>
+  </center>
+  </div>
+  <style>
+    .book_button:link,
+    .book_button:visited {
+      background-color: rgb(45, 55, 104);
+      color: white;
+      padding: 14px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .book_button:hover,
+    .book_button:active {
+      background-color: red;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+
+      $(" .slideanim").each(function () {
+        var pos = $(this).offset().top; var winTop = $(window).scrollTop(); if (pos <
+          winTop + 600) { $(this).addClass("slide"); }
+      });
+    }) </script> </body>

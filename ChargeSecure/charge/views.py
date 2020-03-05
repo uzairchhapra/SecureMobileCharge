@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 import json
 from django.urls import reverse #coverts name to url
+import glob as g
 
 #AWS imports
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -108,6 +109,11 @@ def index(request):
 def loginuser(request):
     return render(request, 'charge/login.html')
 
+def registeruser(request):
+    if request.method == "POST":
+        return HttpResponse("Worked")
+    return render(request, 'charge/register.html')
+
 def logoutuser(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
@@ -130,11 +136,22 @@ def checkslots(request):
     C_S = ChargeStation.objects.filter(id=sid)[0]
     free_slots = get_free_slots(sid)
     free_slots_dict=dict()
+    slot_id = -1
+    try:
+        slot = Book.objects.filter(uid = request.user).order_by('-action_time')
+        if len(slot) != 0 and slot[0].sid.status == 'used':
+            already_booked = True
+            slot_id = slot[0].sid.id
+        else:
+            already_booked = False
+    except:
+            already_booked = False
+
     for i in free_slots:
         free_slots_dict[str(i.slot_number)]=i.id
     
-    data_dic = {'free_slots_dict':free_slots_dict,'station_name':C_S.name,'station_description':C_S.description}
-
+    data_dic = {'free_slots_dict':free_slots_dict,'station_name':C_S.name,'station_description':C_S.description,'station_id':sid,'already_booked':already_booked}
+    data_dic['slot_id'] = slot_id
     print(free_slots_dict)
     if device == "web":
         return render(request, 'charge/chargestation_visual.html', data_dic)
@@ -156,6 +173,18 @@ def get_free_slots(station_number):
             free_slots.append(i)
     return free_slots
 
+def advertisement(request):
+    images_dict = dict()
+    images=g.glob('charge/static/charge/images/offers/*')
+    for i in images:
+        t = i
+        i = "charge/images/offers/"+i.split("/")[-1][7:]
+        print(i)
+        t = t.split("offers")[-1][1:]
+        key = " ".join(t[:t.index(".")].split("_"))
+        images_dict[key] = i
+    data_dic = {'images_dict':images_dict}
+    return render(request, 'charge/advertisement.html',data_dic)
 
 @login_required(login_url="/charge/login")
 def book_slot(request, station_number, phone_status, action):
@@ -192,52 +221,88 @@ def book_slot(request, station_number, phone_status, action):
             Book.objects.create(uid = request.user, sid = slot, phone_status = 'inside', action = 'close').save()
     return [slot]
 
+@login_required(login_url="/charge/login")
 def publish_to_station(request):
-    #Getting station action details
-    station_number = request.GET['station']
-    action = request.GET['action']
-    phone_status = request.GET['phone_status']
-    topic = 'dev'+str(station_number)
+    if request.method=="POST":
+        #Getting station action details
+        station_number = request.POST['stationid']
+        action = request.POST['action']
+        phone_status = request.POST['phone_status']
 
-    slot = book_slot(request, station_number, phone_status, action)
+        topic = 'dev'+str(station_number)
 
-    message = {}
-    message['phone_status'] = phone_status
-    message['message'] = 'from_server'
-    message['error'] = False
+        slot = book_slot(request, station_number, phone_status, action)
+        C_S = ChargeStation.objects.filter(id=station_number)[0]
+        message = {}
+        message['stationid'] = station_number
+        message['station_name'] = C_S.name
+        message['station_description'] = C_S.description
 
-    if len(slot) == 0 :
-        #Slots Unavailable
-        message['error'] = True
-        message['error_desc'] = "Slots Unavailable"
-        messageJson = json.dumps(message)
-        # return HttpResponse(messageJson)
-    elif len(slot) == 2 :
-        #Slots Unavailable
-        message['error'] = True
-        message['error_desc'] = slot[1]
-        messageJson = json.dumps(message)
-        # return HttpResponse(messageJson)
+        message['phone_status'] = phone_status
+        message['message'] = 'from_server'
+        message['error'] = False
+
+        if len(slot) == 0 :
+            #Slots Unavailable
+            message['error'] = True
+            message['error_desc'] = "Slots Unavailable"
+            messageJson = json.dumps(message)
+        elif len(slot) == 2 :
+            #Slots Unavailable
+            message['error'] = True
+            message['error_desc'] = slot[1]
+            if slot[1] == "Your Phone is already inside":
+                message['already_booked'] = True
+                message['slot_id'] = station_number
+            
+            messageJson = json.dumps(message)
+        else:
+            #Slot Available
+            message['slot'] = slot[0].slot_number
+            message['station_number'] = station_number
+            message['action'] = action
+            
+            message['already_booked'] = True
+            message['slot_id'] = station_number
+            
+            # message['phone_status'] = phone_status
+            messageJson = json.dumps(message)
+
+        publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
+
+        if publish_status == True:
+            message['success'] = True
+            #Published Successfully
+            print('Published topic %s: %s\n' % (topic, messageJson))        
+            return render(request, 'charge/booking.html',message)
+
+            # return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+        else:
+            #Published Unsuccessfully
+            message['error'] = True
+            message['error_desc'] = 'Failed to reach Server'
+            messageJson = json.dumps(message)
+            return render(request, 'charge/booking.html',message)
+
+            # return HttpResponse('Published topic %s: %s' % (topic, messageJson))
     else:
-        #Slot Available
-        message['slot'] = slot[0].slot_number
-        message['station_number'] = station_number
-        message['action'] = action
-        # message['phone_status'] = phone_status
-        messageJson = json.dumps(message)
-
-    publish_status = myAWSIoTMQTTClient.publish(topic, messageJson, 1)
-
-    if publish_status == True:
-        #Published Successfully
-        print('Published topic %s: %s\n' % (topic, messageJson))
-        return HttpResponse('Published topic %s: %s' % (topic, messageJson))
-    else:
-        #Published Unsuccessfully
-        message['error'] = True
-        message['error_desc'] = 'Failed to reach Server'
-        messageJson = json.dumps(message)
-        return HttpResponse('Published topic %s: %s' % (topic, messageJson))
+        slot = Book.objects.filter(uid = request.user).order_by('-action_time')
+        if len(slot) != 0 and slot[0].sid.status == 'used':
+            already_booked = True
+            sid = slot[0].sid.cid.id
+            slot_id = slot[0].sid.id
+        else:
+            already_booked = False
+            try:
+                sid = request.GET['stationid']
+            except:
+                return render(request,'charge/maps2.html',{'select_error':True})
+            slot_id = -1
+        C_S = ChargeStation.objects.filter(id=sid)[0]
+        data_dic = {'stationid':sid, 'station_name':C_S.name,'station_description':C_S.description,'already_booked':already_booked,"slot_id":slot_id}
+        messageJson = json.dumps(data_dic)
+        # return HttpResponse('%s' % (messageJson))
+        return render(request, 'charge/booking.html',data_dic)
 
 def book_a_locker(request):
     global loopcount
