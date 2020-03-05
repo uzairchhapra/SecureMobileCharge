@@ -1,0 +1,69 @@
+{% include 'ext_includes/header.html' %}
+{% load static %}
+{% load charging_buddy_tags %}
+<link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
+</head>
+<body>
+  {% include 'ext_includes/nav.html' %}
+
+  <!-- Slots Container -->
+<div id="slots" class="container-fluid">
+
+  <p><strong>{{station_name}}</strong></p>
+  <p>{{station_description}}</p>
+  <div class="text-center">
+    <h1 >Slots</h1>
+    <h4>Check for available slots here!</h4>
+  </div>
+  <div class="row slideanim">
+    <table  class="table table-bordered table-hover text-center">
+    {% for i in "0123" %}
+    {% if i == "0" or i == "2" %} <tr> {% endif %}
+    <td>
+    <div  class="col-sm-12 col-xs-12">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading" {% if i not in free_slots_dict.keys %} style="background-color: #b20535 !important;" 
+        {% else %} style="background-color: #147920 !important;" {% endif %}>
+          <h1>Slot {{i}} </h1>
+        </div>
+        
+        {% if i in free_slots_dict.keys %}
+        <div class="panel-body">
+          <p><strong>{{free_slots_dict|get_item:i }}</strong> Slot Id</p>
+          <p>Ready to use</p>
+        </div>
+        {% else %}
+        <div class="panel-body" style="color: crimson;">
+          <p><strong>Already in use</strong></p>
+          <p>Check after sometime</p>
+        </div>
+        <!-- <div class="panel-footer">
+          <h3>$19</h3>
+          <h4>per year</h4>
+          <button class="btn btn-lg">Sign Up</button>
+        </div> -->
+      </td>
+        {% if i == "1" or i == "2" %} </tr> {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    
+    $(".slideanim").each(function(){
+        var pos = $(this).offset().top;
+  
+        var winTop = $(window).scrollTop();
+          if (pos < winTop + 600) {
+            $(this).addClass("slide");
+          }
+      });
+  })
+  </script>
+  
+</body>

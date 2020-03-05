@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" href="img/logologo.png" type="image/icon type">
+  <title>ChargingWizard | The Charging Solution</title>
+
+  <meta name="description" content="We are your mobile devices' best friend." />
+  <meta name="keywords" content="chargingwizard, charging wizard, charging station, charging station mumbai, secure charging station, battery charger, batter low" />
+
+
+  <!-- Bootstrap CSS CDN -->
+
+  <script src="https://kit.fontawesome.com/df374967be.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="floatpanel.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="style2.css">
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+  <style>
+    #join{
+  background-image: url("img/cover.jpg");
+  /* background-color: rgba(0,0,0,1) !important; */
+  background-repeat: no-repeat;
+  height: 50%;
+  background-size: cover;
+  /* box-shadow:inset 0 0 0 2000px rgba(0,0,0,0.4); */
+  min-height: 50%;
+  /* opacity: 0.8; */
+  color: white;
+  /* padding: 2%; */
+}
+@media only screen and (max-width: 600px) {
+  #join {
+   background-image: url("img/unfinished-wall-potrait.jpg");
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header" style="text-align: center;">
+        <a href="http://chargingwizard.com/">
+          <img src="img/logo.png" style="width: 100%; margin-top: 2%">
+        </a>
+      </div>
+      <ul class="list-unstyled components" style="text-align: center;">
+        <li>
+          <a href="http://chargingwizard.com/brands.html">Brand Allies</a>
+        </li>
+        <li>
+          <a href="http://chargingwizard.com/stores.html">Store Allies</a>
+        </li>
+        <li>
+          <a href="http://chargingwizard.com/join.html">Join</a>
+        </li>
+        <!-- <li>
+          <a href="#">Blog</a>
+        </li> -->
+      </ul>
+    </nav>
+    <div id="content">
+      <div id="join" style="text-align: center;">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <div class="container-fluid">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+              <i class="fas fa-align-left"></i>
+              <span></span>
+            </button>
+          </div>
+        </nav>
+        <br><br><br><br><br><br><br><br><br>
+        <p style="padding-left: 50px;">
+          <h3>&nbsp; &nbsp; &nbsp; &nbsp; Coming Soon</h3>
+        </p>
+
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      </div>
+      <div class="" style="padding: 5%; text-align: center;">
+        <h1>CONTACT US</h1>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="brand-tab" data-toggle="tab" href="#brand" role="tab" aria-controls="brand" aria-selected="true">Brand</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="store-tab" data-toggle="tab" href="#store" role="tab" aria-controls="store" aria-selected="false">Store</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="brand" role="tabpanel" aria-labelledby="brand-tab">
+            <br><br>
+            <p>Currently looking for Brand that are interested in advertising their products / services.</p>
+            <br>
+            <form action="/savebrand.php" method="post">
+              <div class="row">
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="firstname" name="firstname" placeholder="First Name" type="text" required>
+                </div>
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="lastname" name="lastname" placeholder="Last Name" type="text" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+                </div>
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="phone" name="phone" placeholder="Phone" type="number" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="company" name="company" placeholder="Company" type="text" required>
+                </div>
+                <div class="col-sm-6 form-group slideanim">
+                  <select class="form-control" name="businesstype" id="businesstype">
+                    <option value="" disabled selected hidden>What type of Business?</option>
+                    <option value="">Fashion</option>
+                    <option value="">Home Goods</option>
+                    <option value="">Wellness</option>
+                    <option value="">Technology</option>
+                    <option value="">Accessories</option>
+                    <option value="">Beauty</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row slideanim">
+                <div class="col-sm-6 form-group">
+                  <input class="form-control" id="website" name="website" placeholder="Website" type="text" required>
+                </div>
+                <div class="col-sm-6 form-group slideanim">
+                  <input class="form-control" id="instagram" name="instagram" placeholder="IG" type="text" required>
+                </div>
+              </div>
+              <textarea class="form-control slideanim" id="message" name="message" placeholder="How can we work together?" rows="5"></textarea><br>
+              <div class="row slideanim">
+                <div class="col-sm-12 form-group">
+                  <button class="btn btn-dark btn-lg" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="store" role="tabpanel" aria-labelledby="store-tab">
+            <br><br>
+            <p>Currently looking for Retailers that are interested in installing our charging station in their stores.</p>
+            <br>
+            <form action="/saveretailer.php" method="post">
+              <div class="row">
+                <div class="col-sm-6 form-group">
+                  <input class="form-control" id="firstname" name="firstname" placeholder="First Name" type="text" required>
+                </div>
+                <div class="col-sm-6 form-group">
+                  <input class="form-control" id="lastname" name="lastname" placeholder="Last Name" type="text" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-group">
+                  <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+                </div>
+                <div class="col-sm-6 form-group">
+                  <input class="form-control" id="phone" name="phone" placeholder="Phone" type="number" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 form-group">
+                  <input class="form-control" id="company" name="company" placeholder="Company" type="text" required>
+                </div>
+              </div>
+              <!-- <div class="row">
+                  <div class="col-sm-6 form-group">
+                    <input class="form-control" id="website" name="email" placeholder="Website" type="text" required>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <input class="form-control" id="instagram" name="instagram" placeholder="IG" type="text" required>
+                  </div>
+                </div> -->
+              <textarea class="form-control" id="message" name="message" placeholder="How can we work together?" rows="5"></textarea><br>
+              <div class="row">
+                <div class="col-sm-12 form-group">
+                  <button class="btn btn-dark btn-lg" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="page-footer font-small blue pt-4" style="padding: 5%; background-color: white; color: rgba(42, 50, 98, 1);">
+        <!-- Footer Links -->
+        <div class="container-fluid text-center text-md-left">
+          <!-- Grid row -->
+          <div class="row">
+            <!-- Grid column -->
+            <div class="col-md-6 mt-md-0 mt-3 slideanim">
+              <!-- Content -->
+              <h5 class="text-uppercase">ChargingWizard</h5>
+            </div>
+            <!-- Grid column -->
+            <hr class="clearfix w-100 d-md-none pb-3">
+            <!-- Grid column -->
+            <div class="col-md-3 mb-md-0 mb-3">
+              <!-- Links -->
+              <a href="http://chargingwizard.com/">
+                <h5 class="text-uppercase slideanim">ChargingWizard</h5>
+              </a>
+              <ul class="list-unstyled">
+                <li class="slideanim">
+                  <a href="http://chargingwizard.com/brands.html">Brand Allies</a>
+                </li>
+                <li class="slideanim">
+                  <a href="http://chargingwizard.com/stores.html">Store Allies</a>
+                </li>
+                <li class="slideanim">
+                  <a href="http://chargingwizard.com/join.html">Join</a>
+                </li>
+                <!-- <li>
+                <a href="#!">Blog</a>
+              </li> -->
+              </ul>
+            </div>
+            <div class="col-md-3 mb-md-0 mb-3">
+              <!-- Links -->
+              <h5 class="text-uppercase slideanim">Follow Us On</h5>
+              <ul class="list-unstyled">
+                <li class="slideanim">
+                  <!-- <a href="#!">Facebook<a href="#" class="fa fa-facebook"></a></a> -->
+                  <a href="https://www.facebook.com/ChargingWizard-106559954287183"><span class="btn btn-fb"><i class="fab fa-facebook-f pr-1"></i> Facebook</span></a>
+                </li>
+                <li class="slideanim">
+                  <a href="https://twitter.com/ChargingWizard"><span class="btn btn-tw"><i class="fab fa-twitter pr-1"></i> Twitter</span></a>
+                </li>
+                <!-- <li>
+                <a href="#"><span class="btn btn-li"><i class="fab fa-linkedin-in pr-1"></i> Linkedin</span></a>
+              </li> -->
+                <li class="slideanim">
+                  <a href="https://www.instagram.com/chargingwizard/"><span class="btn btn-ins"><i class="fab fa-instagram pr-1"></i> Instagram</span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Grid row -->
+        </div>
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3">© 2020 ChargingWizard. All Rights Reserved</div>
+        <!-- Copyright -->
+
+      </footer>
+    </div>
+    <!-- Page Content  -->
+  </div>
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  <!-- jQuery Custom Scroller CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#sidebar").mCustomScrollbar({
+        theme: "minimal"
+      });
+
+      $('#sidebarCollapse').on('click', function() {
+        $('#sidebar, #content').toggleClass('active');
+        $('.collapse.in').toggleClass('in');
+        $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+{% include 'ext_includes/header.html' %}
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{% static 'charge/css/home.css' %}">
+</head>
+
+<body>
+  {% include 'ext_includes/nav.html' %}
+  <div class="container-fluid">
+    <div class="text-center">
+      <h1>Our Stations</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-sm-2 col-xs-1"></div>
+    <div class="col-md-8 col-sm-8 col-xs-10" id="map"></div>
+    <div class="col-md-2 col-sm-2 col-xs-1"></div>
+  </div>
+
+  <script>
+    var map, infoWindow;
+
+    function initMap() {
+      var options = {
+        zoom: 16,
+        center: {
+          lat: 19.125577,
+          lng: 72.822287
+        }
+      }
+      map = new google.maps.Map(document.getElementById('map'), options);
+      // var result=0;
+      $.ajax('/charge/getlocation', {
+        method: 'GET',
+        data: 0
+      }).done(function (result) {
+        var infowindow = new google.maps.InfoWindow({});
+        var marker,i,info,loc;
+
+        for (i = 0; i < result.length ; i++) {
+          console.log(result[i].longitude);
+          console.log(result[i].latitude);
+          console.log(String(result[i].name));
+
+          marker = new google.maps.Marker({
+            position: {
+              lat: Number(result[i].latitude),
+              lng: Number(result[i].longitude),
+            },
+            map: map,
+            label: String(result[i].name)
+          });
+
+          google.maps.event.addListener(marker, 'click', (function (marker, i) {
+			      return function () {
+
+              
+              loc = "https://www.google.com/maps/dir//" + String(result[i].latitude) + "," + String(result[i].longitude);
+              free_slot_link = "http://127.0.0.1:8000/charge/checkslots?stationid="+String(result[i].id);
+              info = '<strong>'+String(result[i].name)+'</strong><br>\r\ ' +
+              result[i].description+'<br><a target="_blank"  href="'+loc+'">Get Directions</a>'
+              + '<br><a target="_blank"  href="'+free_slot_link+'">Check free slots</a>';
+              console.log(info);
+
+              infowindow.setContent(info);
+              infowindow.open(map, marker);
+            }
+	      	})(marker, i));
+
+        };
+
+      }).fail(function () {
+        alert('Server down locations not available');
+      });
+
+      // console.log(result);
+
+      // var marker = new google.maps.Marker({
+      //   position: {
+      //     lat: 19.123217,
+      //     lng: 72.822274
+      //   },
+      //   map: map
+      // });
+
+      // var marker = new google.maps.Marker();
+      infoWindow = new google.maps.InfoWindow;
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (p) {
+          var position = {
+            lat: p.coords.latitude,
+            lng: p.coords.longitude
+          };
+
+          infoWindow.setPosition(position);
+          infoWindow.setContent('Your location!');
+          infoWindow.open(map);
+          map.setCenter(position);
+          map.setZoom(16);
+        }, function () {
+          handleLocationError('Geolocation service failed', map.getCenter());
+        });
+      } else {
+        handleLocationError('No geolocation available.', map.getCenter());
+      }
+
+    }
+
+    function handleLocationError(content, position) {
+      infoWindow.setPosition(position);
+      infoWindow.setContent(content);
+      infoWindow.open(map);
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw5hl8GzyLHgmEw_4isUDnA7CO-zJPV1A&callback=initMap">
+  </script>
+
+</body>
+
+</html>

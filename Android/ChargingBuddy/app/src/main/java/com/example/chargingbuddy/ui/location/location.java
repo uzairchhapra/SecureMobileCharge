@@ -73,7 +73,7 @@ public class location extends Fragment implements OnMapReadyCallback, GoogleMap.
             URL url;
             HttpURLConnection conn;
             try {
-                url = new URL("http://192.168.0.104:8000/charge/getlocation");
+                url = new URL("http://192.168.43.237:8000/charge/getlocation");
                 conn = (HttpURLConnection) url.openConnection();
                 InputStream in = conn.getInputStream();
                 InputStreamReader reader = new InputStreamReader(in);
