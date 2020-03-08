@@ -261,9 +261,11 @@ def publish_to_station(request):
             message['slot'] = slot[0].slot_number
             message['station_number'] = station_number
             message['action'] = action
-            
+            temp = vars(slot[0])
+            for item in temp:
+                print(item, ':', temp[item])
             message['already_booked'] = True
-            message['slot_id'] = station_number
+            message['slot_id'] = slot[0].id
             
             # message['phone_status'] = phone_status
             messageJson = json.dumps(message)
