@@ -139,7 +139,8 @@ def checkslots(request):
     slot_id = -1
     try:
         slot = Book.objects.filter(uid = request.user).order_by('-action_time')
-        if len(slot) != 0 and slot[0].sid.status == 'used':
+        # if len(slot) != 0 and slot[0].sid.status == 'used':
+        if len(slot) != 0 and (slot[0].action != "close" or slot[0].phone_status != 'outside'):
             already_booked = True
             slot_id = slot[0].sid.id
         else:
@@ -190,14 +191,16 @@ def advertisement(request):
 def book_slot(request, station_number, phone_status, action):
 
     slot = Book.objects.filter(uid = request.user).order_by('-action_time') #current slot of user
-    if (action == 'close' or phone_status == 'inside') and (len(slot) == 0 or slot[0].sid.status == 'unused')  :
+    # if (action == 'close' or phone_status == 'inside') and (len(slot) == 0 or slot[0].sid.status == 'unused')  :
+    if (action == 'close' or phone_status == 'inside') and (len(slot) == 0 or (slot[0].phone_status == 'outside' and slot[0].action == 'close'))  :
         return ["Error","First put your Phone inside"]
     elif action == 'close' or phone_status == 'inside':
         slot = slot[0].sid
 
     if action == 'open':
         if phone_status == 'outside':
-            if len(slot) != 0 and slot[0].sid.status == 'used':
+            # if len(slot) != 0 and slot[0].sid.status == 'used':
+            if len(slot) != 0 and (slot[0].action != "close" or slot[0].phone_status != 'outside'):
                 return ["Error","Your Phone is already inside"]
             # If phone is outside the charging slot
             # Checking if slots available in station
@@ -251,9 +254,10 @@ def publish_to_station(request):
             #Slots Unavailable
             message['error'] = True
             message['error_desc'] = slot[1]
-            if slot[1] == "Your Phone is already inside":
+            if slot[1] == "Your Phone is already inside":    
+                sid = Book.objects.filter(uid = request.user).order_by('-action_time')[0].sid.id
                 message['already_booked'] = True
-                message['slot_id'] = station_number
+                message['slot_id'] = sid
             
             messageJson = json.dumps(message)
         else:
@@ -289,7 +293,8 @@ def publish_to_station(request):
             # return HttpResponse('Published topic %s: %s' % (topic, messageJson))
     else:
         slot = Book.objects.filter(uid = request.user).order_by('-action_time')
-        if len(slot) != 0 and slot[0].sid.status == 'used':
+        # if len(slot) != 0 and slot[0].sid.status == 'used':
+        if len(slot) != 0 and (slot[0].action != "close" or slot[0].phone_status != 'outside'):
             already_booked = True
             sid = slot[0].sid.cid.id
             slot_id = slot[0].sid.id
