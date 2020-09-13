@@ -65,7 +65,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-            'custom_tags':'charge.templatetags.charging_buddy_tags'
+                'custom_tags': 'charge.templatetags.charging_buddy_tags'
             }
         },
     },
@@ -80,11 +80,6 @@ WSGI_APPLICATION = 'ChargeSecure.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'u708089898_charg',
-        'USER': 'u708089898_yoyo',
-        'PASSWORD': '123456',
-        'HOST': 'sql170.main-hosting.eu',
-        'PORT': '' ,
 
     }
 }
@@ -129,5 +124,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-#AWS Setting
-
+# AWS Setting

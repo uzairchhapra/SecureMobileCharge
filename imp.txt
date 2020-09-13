@@ -1,5 +1,3 @@
-Commit by Uzair - 1
-Commit by Aditya -2
 
 from django.db import connection
 connection.close()

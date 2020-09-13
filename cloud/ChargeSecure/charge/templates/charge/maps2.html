@@ -36,9 +36,9 @@
         data: 0
       }).done(function (result) {
         var infowindow = new google.maps.InfoWindow({});
-        var marker,i,info,loc;
+        var marker, i, info, loc;
 
-        for (i = 0; i < result.length ; i++) {
+        for (i = 0; i < result.length; i++) {
           console.log(result[i].longitude);
           console.log(result[i].latitude);
           console.log(String(result[i].name));
@@ -53,20 +53,20 @@
           });
 
           google.maps.event.addListener(marker, 'click', (function (marker, i) {
-			      return function () {
+            return function () {
 
-              
+
               loc = "https://www.google.com/maps/dir//" + String(result[i].latitude) + "," + String(result[i].longitude);
-              free_slot_link = "http://127.0.0.1:8000/charge/checkslots?stationid="+String(result[i].id);
-              info = '<strong>'+String(result[i].name)+'</strong><br>\r\ ' +
-              result[i].description+'<br><a target="_blank"  href="'+loc+'">Get Directions</a>'
-              + '<br><a target="_blank"  href="'+free_slot_link+'">Check free slots</a>';
+              free_slot_link = "http://127.0.0.1:8000/charge/checkslots?stationid=" + String(result[i].id);
+              info = '<strong>' + String(result[i].name) + '</strong><br>\r\ ' +
+                result[i].description + '<br><a target="_blank"  href="' + loc + '">Get Directions</a>'
+                + '<br><a target="_blank"  href="' + free_slot_link + '">Check free slots</a>';
               console.log(info);
 
               infowindow.setContent(info);
               infowindow.open(map, marker);
             }
-	      	})(marker, i));
+          })(marker, i));
 
         };
 
@@ -114,8 +114,7 @@
       infoWindow.open(map);
     }
   </script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw5hl8GzyLHgmEw_4isUDnA7CO-zJPV1A&callback=initMap">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=">
   </script>
 
 </body>

@@ -1,5 +1,3 @@
-# SecureMobileCharge
-### Collaborators
-##### 1. Uzair Chhapra
-##### 2. Sagar Ambilpure
-##### 3. Aditya Chavan
+This is Server Code
+
+Hardware:- Raspi code in https://github.com/adityachavan198/RaspiChargeSecure
